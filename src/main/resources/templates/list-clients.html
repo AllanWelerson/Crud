@@ -1,0 +1,115 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<title>Clients</title>
+	
+	<link rel='stylesheet' th:href='@{/webjars/bootstrap/css/bootstrap.min.css}'/>
+	<link rel="stylesheet" th:href='@{/webjars/font-awesome/css/font-awesome.min.css}'/>
+	
+	<style>
+	
+	table tr{
+		text-align: center;
+	} 
+	
+	</style>
+	
+</head>
+<body>
+	
+	<nav class="navbar navbar-dark bg-dark">
+		<span class="navbar-brand">CRUD Spring-Boot</span>
+	</nav>	
+	
+
+	
+			<br />
+			<br />
+
+	
+	<div class="container">
+		
+		
+		
+			<div class="row">
+				<h3 class="col-md-4 offset-md-1">Cadastro de clientes</h3>
+			</div>						
+				<br />
+			<form method="POST" th:action="@{/clients}"
+					th:object="${client}">
+				<div class="form-group row justify-content-md-center">
+					
+					<label for="name" class="col-md-1 col-form-label">Name:</label>
+					<div class="col-md-3">	
+						<input type="text" class="form-control" th:field="*{name}" id="name"/>
+					</div>	
+					<label for="idade" class="col-md-1 col-form-label">Idade:</label>
+					<div class="col-md-1">
+						<input type="text" class="form-control" th:field="*{idade}" id="idade"/>
+					</div>
+					<div class="col-md-2">
+						<button type="submit" class="btn btn-primary">Cadastrar</button>
+					</div>
+					
+				</div>
+			</form>
+			
+			<hr />
+			<br />	
+		
+	
+		<div class="row justify-content-md-center
+						align-items-center">
+			<div class="col-md-8">
+				<div class="table-responsive-sm">
+					<table class="table table-striped table-hover table-bordered">
+						
+						<thead>
+							<tr>
+								<th scope="col">ID</th>
+								<th scope="col">Nome</th>
+								<th scope="col">Idade</th>
+								<th scipe="col"></th>
+							</tr>
+						</thead>
+					
+						<tbody>
+							<tr th:each="client : ${clients}">
+								<th scope="row" th:text="${client.id}"></th>
+								<td>
+									<a th:href="@{/clients/{id}(id=${client.id})}" th:text="${client.name}"></a>
+								</td>
+								<td th:text="${client.idade}"></td>
+								<td>
+									<form method="POST"
+										th:onsubmit="'return confirm(\'Posso Remover o Cliente ' + ${client.name} + '?\');'"
+										th:action="@{/clients/{id}(id=${client.id})}">
+										<input type="hidden" name="_method" value="DELETE" />
+										
+										<button type="submit" class="btn">
+											<span class="fa fa-trash"></span>
+										</button>	
+									</form>
+								</td>
+							</tr>
+							<tr th:if="${clients.empty}">
+								<td colspan="5">Nenhum Cliente cadastrado!</td>
+							</tr>
+						</tbody>
+					
+					</table>
+				</div>
+			</div>		
+		</div>
+	</div>
+	
+	<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+	
+	<script>
+	</script>
+	
+</body>
+</html>
