@@ -1,33 +1,55 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:th="http://www.thymeleaf.org">
-<head>
-	<meta charset="UTF-8" />
-	<title>Clients</title>
-	
-	<link rel='stylesheet' th:href='@{/webjars/bootstrap/css/bootstrap.min.css}'/>
-	<link rel="stylesheet" th:href='@{/webjars/font-awesome/css/font-awesome.min.css}'/>
-	
-	<style>
-	
-	table tr{
-		text-align: center;
-	} 
-	
-	</style>
-	
-</head>
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/layout}">
+<head></head>
 <body>
 	
-	<nav class="navbar navbar-dark bg-dark">
-		<span class="navbar-brand">CRUD Spring-Boot</span>
-	</nav>	
+	<section layout:fragment="content">
 	
-
+			<!-- Modal -->
+			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+			  <div class="modal-dialog modal-dialog-centered" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title" id="exampleModalCenterTitle">Clientes</h5>
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			          <span aria-hidden="true">&times;</span>
+			        </button>
+			      </div>
+			      <div class="modal-body">
+			        ...
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			
+			
+			<!-- Modal excluir-->
+			<div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="yModalDelete" aria-hidden="true">
+			  <div class="modal-dialog modal-dialog-centered" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title" id="exampleModalCenterTitle">Clientes</h5>
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			          <span aria-hidden="true">&times;</span>
+			        </button>
+			      </div>
+			      <div class="modal-body">
+			        ...
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			        <button type="button" class="btn btn-primary save">Save changes</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
 	
-			<br />
-			<br />
-
 	
 	<div class="container">
 		
@@ -39,7 +61,43 @@
 				<br />
 			<form method="POST" th:action="@{/clients}"
 					th:object="${client}">
+				
+				<div class="alert alert-danger alert-dismissible" role="alert"
+						th:if="${#fields.hasAnyErrors()}">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						
+						<div th:each="erro: ${#fields.detailedErrors()}">
+							<i class="fa fa-exclamation-circle"></i>
+							<span th:text="${erro.message}">Mensagem de erro</span>
+						</div>
+						
+				</div> 	
+				
+				<div class="alert alert-sucess"
+					 th:if="${!#strings.isEmpty(message)}">
+										
+					<!-- span th:text="${message}">Mensagem ok</span-->	
+					
+					<script th:inline="javascript">
+						/*<![CDATA[*/
+							$('#myModal').modal('toggle')
+							var message = /*[[${message}]]*/;
+							$('.modal-body').html(message)
+						/*]]>*/
+					</script>
+
+
+					
+					 
+				</div>
+					
 				<div class="form-group row justify-content-md-center">
+					
+					<div th:if="(*{id})">
+						<input type="hidden" th:field="*{id}"/>
+					</div>
 					
 					<label for="name" class="col-md-1 col-form-label">Name:</label>
 					<div class="col-md-3">	
@@ -47,10 +105,10 @@
 					</div>	
 					<label for="idade" class="col-md-1 col-form-label">Idade:</label>
 					<div class="col-md-1">
-						<input type="text" class="form-control" th:field="*{idade}" id="idade"/>
+						<input type="number" class="form-control" th:field="*{idade}" id="idade"/>
 					</div>
 					<div class="col-md-2">
-						<button type="submit" class="btn btn-primary">Cadastrar</button>
+						<button type="submit" class="btn btn-primary save">Cadastrar</button>
 					</div>
 					
 				</div>
@@ -83,14 +141,16 @@
 								</td>
 								<td th:text="${client.idade}"></td>
 								<td>
-									<form method="POST"
+									 <form method="POST"
 										th:onsubmit="'return confirm(\'Posso Remover o Cliente ' + ${client.name} + '?\');'"
-										th:action="@{/clients/{id}(id=${client.id})}">
-										<input type="hidden" name="_method" value="DELETE" />
-										
+										th:action="@{/clients/{id}(id=${client.id})}"> 
+									   <input type="hidden" name="_method" value="DELETE" />
+
 										<button type="submit" class="btn">
 											<span class="fa fa-trash"></span>
-										</button>	
+										</button>
+														
+											
 									</form>
 								</td>
 							</tr>
@@ -105,11 +165,18 @@
 		</div>
 	</div>
 	
-	<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
-	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
-	
 	<script>
+		
+	
+	
+	
+	
+	
 	</script>
+	
+	</section>
+	
+	
 	
 </body>
 </html>

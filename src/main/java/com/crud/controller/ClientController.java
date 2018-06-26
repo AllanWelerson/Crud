@@ -1,13 +1,17 @@
 package com.crud.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.crud.models.Client;
 import com.crud.repository.ClientRepository;
@@ -20,19 +24,23 @@ public class ClientController {
 	private ClientRepository cr;
 	
 	@PostMapping
-	public String saveClients(Client client) {
+	public ModelAndView saveClients(@Valid Client client, BindingResult result, RedirectAttributes attributes) {
 		
+		if(result.hasErrors()) {
+			return  showClients(client);
+		}
 		this.cr.save(client);
+		attributes.addFlashAttribute("message","Cliente salvo com sucesso!");		
 		
-		return "redirect:/clients";
+		return new ModelAndView("redirect:/clients");
 	}
 	
 	@GetMapping
-	public ModelAndView showClients()	{
+	public ModelAndView showClients(Client client)	{
 		ModelAndView mv = new ModelAndView("list-clients"); 
 		
 		mv.addObject("clients",cr.findAll());
-		mv.addObject("client",new Client());
+		mv.addObject(client);
 		
 		return mv;
 	}
@@ -46,8 +54,12 @@ public class ClientController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public String remove(@PathVariable Long id) {
+	public String remove(@PathVariable Long id, RedirectAttributes attributes) {
+		
 		cr.delete(id);
+		
+		attributes.addFlashAttribute("message","Cliente removido com sucesso!");
+		
 		return "redirect:/clients";
 	}
 	
